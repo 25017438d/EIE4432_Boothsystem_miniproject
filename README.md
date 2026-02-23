@@ -240,7 +240,7 @@ This project is licensed under the ISC License.
 
 ## 👥 Authors
 
-Cheng tsz hung and Awwab Hamam
+- Cheng tsz hung and Awwab Hamam
 
 ## 🐛 Known Issues
 
