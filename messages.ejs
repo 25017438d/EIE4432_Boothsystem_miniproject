@@ -1,0 +1,403 @@
+<!--
+  Cheng Tsz Hung (25017438D)
+  Awwab Hamam (22103907D)
+-->
+<%- include('partials/page-start', { pageTitle: 'Booth Management' }) %>
+
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+  <div>
+    <h1 class="h4 mb-1">Booth Map Management</h1>
+    <p class="text-muted mb-0">Monitor availability across both event floors and apply overrides instantly.</p>
+  </div>
+  <div class="d-flex align-items-center gap-2">
+    <select class="form-select" onchange="if(this.value){window.location.href=this.value;}">
+      <% events.forEach((item) => { %>
+      <option value="/admin/booths?eventId=<%= item.id %>" <%= item.id === event.id ? 'selected' : '' %>>
+        <%= item.title %>
+      </option>
+      <% }) %>
+    </select>
+  <a href="/admin/booths/editor?eventId=<%= event.id %>" class="btn btn-primary">Open Map Editor</a>
+    <form
+      action="/admin/booths/reset"
+      method="post"
+      onsubmit="return confirm('Resetting will release all booths and remove bookings for this event. Continue?');"
+    >
+      <input type="hidden" name="eventId" value="<%= event.id %>" />
+      <button type="submit" class="btn btn-outline-danger">Reset Booth Map</button>
+    </form>
+  </div>
+</div>
+
+<div class="row g-4">
+  <div class="col-lg-7">
+    <div class="card shadow-sm">
+  <div class="card-body">
+        <h2 class="h5 mb-3">Floor Layout Overview</h2>
+        <div class="booth-map-wrapper">
+
+          <% const groupedByFloor = event.booths.reduce((acc, booth) => {
+               if (!acc[booth.floor]) {
+                 acc[booth.floor] = [];
+               }
+               acc[booth.floor].push(booth);
+               return acc;
+             }, {});
+             const floorIds = Object.keys(groupedByFloor).sort();
+             const columns = 4;
+             const boothWidth = 140;
+             const boothHeight = 120;
+             const gapX = 28;
+             const gapY = 24;
+             const floorSpacing = 60;
+             const offsetYStart = 70;
+             let computedHeight = offsetYStart;
+             floorIds.forEach((floorId) => {
+               const floorBooths = groupedByFloor[floorId];
+               const rows = Math.ceil(floorBooths.length / columns) || 1;
+               computedHeight += rows * (boothHeight + gapY) + floorSpacing;
+             });
+             // ensure a sensible minimum height
+             const svgHeight = Math.max(760, computedHeight + 40);
+          %>
+
+          <svg viewBox="0 0 820 <%= svgHeight %>" preserveAspectRatio="xMidYMid meet" class="w-100 admin-map" xmlns="http://www.w3.org/2000/svg">
+            <rect x="0" y="0" width="820" height="<%= svgHeight %>" fill="#f8f9fa" stroke="#e0e0e0" stroke-width="2"></rect>
+            <% // prefer explicit event.sections labels when available
+               const sectionMap = (event.sections || []).reduce((m, s) => { m[String(s.floor)] = s.floorLabel || ''; return m; }, {});
+               let offsetY = offsetYStart;
+                 floorIds.forEach((floorId) => {
+                   const floorBooths = groupedByFloor[floorId];
+                   const floorLabel = sectionMap[floorId] || floorBooths[0]?.floorLabel || `Floor ${floorId}`;
+                 const rows = Math.ceil(floorBooths.length / columns) || 1;
+            %>
+            <text data-floor="<%= floorId %>" x="410" y="<%= offsetY - 25 %>" text-anchor="middle" class="map-title"><%= floorLabel %></text>
+            <% floorBooths.forEach((booth, index) => {
+                 const row = Math.floor(index / columns);
+                 const column = index % columns;
+                 const computedX = 70 + column * (boothWidth + gapX);
+                 const computedY = offsetY + row * (boothHeight + gapY);
+                 const x = (typeof booth.x !== 'undefined') ? booth.x : computedX;
+                 const y = (typeof booth.y !== 'undefined') ? booth.y : computedY;
+                 const boothClass = booth.disabled
+                   ? 'booth--disabled'
+                   : booth.status === 'reserved'
+                   ? 'booth--reserved'
+                   : 'booth--available';
+            %>
+            <g
+              class="booth admin-booth <%= boothClass %>"
+              data-booth-id="<%= booth.id %>"
+              data-booth-label="<%= booth.label %>"
+              data-booth-status="<%= booth.status %>"
+              transform="translate(<%= x %>, <%= y %>)"
+              style="cursor: pointer"
+            >
+              <rect width="<%= boothWidth %>" height="<%= boothHeight %>" rx="16" ry="16"></rect>
+              <text x="<%= boothWidth / 2 %>" y="46" text-anchor="middle" class="booth-label small"><%= booth.label %></text>
+              <text x="<%= boothWidth / 2 %>" y="74" text-anchor="middle" class="booth-theme small"><%= booth.theme %></text>
+              <text x="<%= boothWidth / 2 %>" y="98" text-anchor="middle" class="map-status">
+                <%= booth.disabled ? 'Disabled' : booth.status === 'reserved' ? 'Reserved' : 'Available' %>
+              </text>
+            </g>
+            <% });
+               offsetY += rows * (boothHeight + gapY) + floorSpacing;
+            %>
+            <% }); %>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-5">
+    <div class="card shadow-sm mb-4">
+      <div class="card-body">
+        <h2 class="h5 mb-3">Availability Snapshot</h2>
+        <% const total = event.booths.length;
+           const reserved = event.booths.filter((b) => b.status === 'reserved').length;
+           const disabled = event.booths.filter((b) => b.disabled).length;
+           const available = total - reserved - disabled;
+        %>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item d-flex justify-content-between"><span>Total booths</span><strong><%= total %></strong></li>
+          <li class="list-group-item d-flex justify-content-between text-success"><span>Available</span><strong><%= available %></strong></li>
+          <li class="list-group-item d-flex justify-content-between text-danger"><span>Reserved</span><strong><%= reserved %></strong></li>
+          <li class="list-group-item d-flex justify-content-between text-secondary"><span>Disabled</span><strong><%= disabled %></strong></li>
+        </ul>
+      </div>
+    </div>
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h2 class="h6 text-uppercase text-muted">Booth Controls</h2>
+        <div class="table-responsive booth-controls-table">
+          <table class="table table-sm align-middle">
+            <thead>
+              <tr>
+                <th>Booth</th>
+                <th>Tier</th>
+                <th>Status</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <% event.booths.forEach((booth) => { %>
+              <tr>
+                <td>
+                  <strong><%= booth.label %></strong>
+                  <div class="small text-muted"><%= booth.floorLabel %></div>
+                </td>
+                <td class="small text-muted"><%= booth.tier.charAt(0).toUpperCase() + booth.tier.slice(1) %></td>
+                <td>
+                  <span class="badge <%= booth.disabled ? 'bg-secondary' : booth.status === 'reserved' ? 'bg-danger' : 'bg-success' %>">
+                    <%= booth.disabled ? 'Disabled' : booth.status === 'reserved' ? 'Reserved' : 'Available' %>
+                  </span>
+                </td>
+                <td class="text-end">
+                  <div class="d-flex gap-1 justify-content-end flex-wrap">
+                    <form action="/admin/booths/toggle" method="post" class="d-inline">
+                      <input type="hidden" name="eventId" value="<%= event.id %>" />
+                      <input type="hidden" name="boothId" value="<%= booth.id %>" />
+                      <input type="hidden" name="disabled" value="<%= booth.disabled ? 'false' : 'true' %>" />
+                      <button type="submit" class="btn btn-outline-secondary btn-sm">
+                        <%= booth.disabled ? 'Enable' : 'Disable' %>
+                      </button>
+                    </form>
+                    <form action="/admin/booths/status" method="post" class="d-inline">
+                      <input type="hidden" name="eventId" value="<%= event.id %>" />
+                      <input type="hidden" name="boothId" value="<%= booth.id %>" />
+                      <input type="hidden" name="status" value="<%= booth.status === 'reserved' ? 'available' : 'reserved' %>" />
+                      <button type="submit" class="btn btn-outline-primary btn-sm">
+                        Mark <%= booth.status === 'reserved' ? 'Available' : 'Reserved' %>
+                      </button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+        <p class="small text-muted mb-0">Showing all booths. Use the table scroll to view and manage more booths, or click a floor on the map to jump to a floor.</p>
+      </div>
+    </div>
+    <div class="card shadow-sm mt-4">
+      <div class="card-body">
+        <h2 class="h6 text-uppercase text-muted">Event Summary</h2>
+        <p class="mb-1"><strong><%= event.title %></strong></p>
+        <p class="mb-1"><%= event.date %> • <%= event.time %></p>
+        <p class="mb-2"><%= event.venue %></p>
+        <div class="small text-muted">
+          Pricing: Premium HK$<%= event.pricing.premium.toLocaleString() %>,
+          Standard HK$<%= event.pricing.standard.toLocaleString() %>,
+          Economy HK$<%= event.pricing.economy.toLocaleString() %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="buyerTooltip" class="buyer-tooltip" style="display: none"></div>
+
+<script>
+  (function () {
+    const eventId = '<%= event.id %>';
+    let boothData = {};
+    let updateInterval;
+    const tooltip = document.getElementById('buyerTooltip');
+
+    function fetchBoothStatus() {
+      fetch(`/api/booths/status?eventId=${eventId}`)
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.booths) {
+            data.booths.forEach((booth) => {
+              boothData[booth.id] = booth;
+            });
+            updateBoothDisplay();
+          }
+        })
+        .catch((err) => console.error('Failed to fetch booth status:', err));
+    }
+
+    function updateBoothDisplay() {
+      const booths = document.querySelectorAll('.admin-booth');
+      booths.forEach((boothEl) => {
+        const boothId = boothEl.dataset.boothId;
+        const data = boothData[boothId];
+        if (data) {
+          boothEl.dataset.boothStatus = data.status;
+          boothEl.classList.remove('booth--available', 'booth--reserved', 'booth--disabled');
+          if (data.disabled) {
+            boothEl.classList.add('booth--disabled');
+          } else if (data.status === 'reserved') {
+            boothEl.classList.add('booth--reserved');
+          } else {
+            boothEl.classList.add('booth--available');
+          }
+        }
+      });
+    }
+
+    function showBuyerTooltip(event, boothId) {
+      const data = boothData[boothId];
+      if (!data || !data.buyerInfo) {
+        tooltip.style.display = 'none';
+        return;
+      }
+
+      const buyer = data.buyerInfo;
+      tooltip.innerHTML = `
+        <div class="buyer-tooltip-header">
+          <strong>Buyer Information</strong>
+        </div>
+        <div class="buyer-tooltip-body">
+          <div class="buyer-tooltip-item">
+            <strong>Vendor:</strong> ${buyer.nickname}
+          </div>
+          <div class="buyer-tooltip-item">
+            <strong>User ID:</strong> <code>${buyer.userId}</code>
+          </div>
+          <div class="buyer-tooltip-item">
+            <strong>Email:</strong> ${buyer.email}
+          </div>
+          <div class="buyer-tooltip-item">
+            <strong>Ticket:</strong> <span class="badge bg-primary">${buyer.ticketCode}</span>
+          </div>
+          <div class="buyer-tooltip-item">
+            <strong>Booked:</strong> ${new Date(buyer.bookedAt).toLocaleString()}
+          </div>
+        </div>
+      `;
+
+      positionTooltip(event);
+      tooltip.style.display = 'block';
+    }
+
+    function positionTooltip(event) {
+      const offset = 15;
+      let x = event.clientX + offset;
+      let y = event.clientY + offset;
+
+      tooltip.style.left = x + 'px';
+      tooltip.style.top = y + 'px';
+
+      setTimeout(() => {
+        const rect = tooltip.getBoundingClientRect();
+        const viewportWidth = window.innerWidth;
+        const viewportHeight = window.innerHeight;
+
+        if (rect.right > viewportWidth) {
+          x = event.clientX - rect.width - offset;
+        }
+        if (rect.bottom > viewportHeight) {
+          y = event.clientY - rect.height - offset;
+        }
+
+        tooltip.style.left = x + 'px';
+        tooltip.style.top = y + 'px';
+      }, 0);
+    }
+
+    function hideBuyerTooltip() {
+      tooltip.style.display = 'none';
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      fetchBoothStatus();
+      updateInterval = setInterval(fetchBoothStatus, 5000);
+
+      const booths = document.querySelectorAll('.admin-booth');
+      booths.forEach((booth) => {
+        booth.addEventListener('mouseenter', (e) => {
+          const boothId = booth.dataset.boothId;
+          if (boothData[boothId]?.buyerInfo) {
+            showBuyerTooltip(e, boothId);
+          }
+        });
+
+        booth.addEventListener('mousemove', (e) => {
+          const boothId = booth.dataset.boothId;
+          if (boothData[boothId]?.buyerInfo && tooltip.style.display === 'block') {
+            positionTooltip(e);
+          }
+        });
+
+        booth.addEventListener('mouseleave', () => {
+          hideBuyerTooltip();
+        });
+      });
+
+      tooltip.addEventListener('mouseenter', () => {
+        tooltip.style.display = 'block';
+      });
+
+      tooltip.addEventListener('mouseleave', () => {
+        hideBuyerTooltip();
+      });
+    });
+
+    window.addEventListener('beforeunload', () => {
+      if (updateInterval) {
+        clearInterval(updateInterval);
+      }
+    });
+  })();
+</script>
+
+<style>
+  .buyer-tooltip {
+    position: fixed;
+    z-index: 10000;
+    background: #fff;
+    border: 2px solid #0d6efd;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    padding: 0;
+    min-width: 250px;
+    max-width: 320px;
+    pointer-events: auto;
+  }
+
+  .buyer-tooltip-header {
+    background: #0d6efd;
+    color: #fff;
+    padding: 8px 12px;
+    border-radius: 6px 6px 0 0;
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+
+  .buyer-tooltip-body {
+    padding: 10px 12px;
+  }
+
+  .buyer-tooltip-item {
+    margin-bottom: 6px;
+    font-size: 0.8125rem;
+    line-height: 1.4;
+  }
+
+  .buyer-tooltip-item:last-child {
+    margin-bottom: 0;
+  }
+
+  .buyer-tooltip-item strong {
+    color: #495057;
+    display: inline-block;
+    min-width: 70px;
+  }
+
+  .buyer-tooltip-item code {
+    background: #f8f9fa;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 0.75rem;
+  }
+
+  .buyer-tooltip-item .badge {
+    font-size: 0.7rem;
+  }
+</style>
+
+<%- include('partials/page-end') %>
+

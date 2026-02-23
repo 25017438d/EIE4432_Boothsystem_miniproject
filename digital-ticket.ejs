@@ -1,0 +1,41 @@
+<!--
+  Cheng Tsz Hung (25017438D)
+  Awwab Hamam (22103907D)
+-->
+<%- include('partials/page-start') %>
+
+<div class="container mt-4">
+    <h2>Real-time Booth Analytics Dashboard</h2>
+    
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Revenue Trends</h5>
+                    <div class="analytics-chart-wrapper">
+                        <canvas id="revenueChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <input type="hidden" id="analyticsData" value='<%- analyticsData %>'/>
+    
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Export Options</h5>
+                    <button id="exportCSV" class="btn btn-primary">Export to CSV</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="/js/analytics-dashboard.js"></script>
+
+<%- include('partials/page-end') %>

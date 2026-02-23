@@ -1,0 +1,157 @@
+<!--
+  Cheng Tsz Hung (25017438D)
+  Awwab Hamam (22103907D)
+-->
+<%- include('partials/page-start', { pageTitle: 'Booth Map Editor' }) %>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <h1 class="h4 mb-1">Booth Map Editor</h1>
+    <p class="text-muted mb-0">Drag booths around, edit labels, set pricing and booth codes. Save when done.</p>
+  </div>
+  <div>
+    <a href="/admin/booths?eventId=<%= event.id %>" class="btn btn-outline-secondary">Back to Booth Management</a>
+  </div>
+</div>
+
+<div class="row g-4">
+  <div class="col-lg-8">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title">Editable Floor Map</h5>
+        <div class="d-flex align-items-center justify-content-between mb-2">
+          <div class="btn-group" role="group" aria-label="Map zoom controls">
+            <button id="zoomOut" type="button" class="btn btn-sm btn-outline-secondary">−</button>
+            <input id="zoomRange" type="range" min="50" max="200" value="100" step="5" style="width:160px" />
+            <button id="zoomIn" type="button" class="btn btn-sm btn-outline-secondary">+</button>
+            <button id="zoomReset" type="button" class="btn btn-sm btn-outline-secondary">Reset</button>
+          </div>
+          <div class="text-muted small">Tip: mouse wheel to zoom, drag empty area to pan</div>
+        </div>
+        <div class="booth-map-wrapper">
+
+          <% const groupedByFloor = event.booths.reduce((acc, booth) => {
+               if (!acc[booth.floor]) acc[booth.floor] = [];
+               acc[booth.floor].push(booth);
+               return acc;
+             }, {});
+             const floorIds = Object.keys(groupedByFloor).sort();
+             const columns = 4;
+             const boothWidth = 140;
+             const boothHeight = 120;
+             const gapX = 28;
+             const gapY = 24;
+             const floorSpacing = 60;
+             const offsetYStart = 70;
+             let computedHeight = offsetYStart;
+             floorIds.forEach((floorId) => {
+               const floorBooths = groupedByFloor[floorId];
+               const rows = Math.ceil(floorBooths.length / columns) || 1;
+               computedHeight += rows * (boothHeight + gapY) + floorSpacing;
+             });
+             const svgHeight = Math.max(760, computedHeight + 40);
+          %>
+
+          <svg id="editorMap" viewBox="0 0 820 <%= svgHeight %>" preserveAspectRatio="xMidYMid meet" class="w-100 admin-map" xmlns="http://www.w3.org/2000/svg">
+            <rect x="0" y="0" width="820" height="<%= svgHeight %>" fill="#fffaf0" stroke="#e0e0e0" stroke-width="2"></rect>
+        <% // prefer explicit event.sections labels when available
+          const sectionMap = (event.sections || []).reduce((m, s) => { m[String(s.floor)] = s.floorLabel || ''; return m; }, {});
+        %>
+        <% let offsetY = offsetYStart;
+          floorIds.forEach((floorId) => {
+            const floorBooths = groupedByFloor[floorId];
+            const rows = Math.ceil(floorBooths.length / columns) || 1;
+            const floorLabel = sectionMap[floorId] || floorBooths[0]?.floorLabel || `Floor ${floorId}`;
+            %>
+            <text data-floor="<%= floorId %>" x="410" y="<%= offsetY - 25 %>" text-anchor="middle" class="map-title"><%= floorLabel %></text>
+            <% floorBooths.forEach((booth, index) => {
+                 const row = Math.floor(index / columns);
+                 const column = index % columns;
+                 const computedX = 70 + column * (boothWidth + gapX);
+                 const computedY = offsetY + row * (boothHeight + gapY);
+                 const x = (typeof booth.x !== 'undefined') ? booth.x : computedX;
+                 const y = (typeof booth.y !== 'undefined') ? booth.y : computedY;
+                 const boothClass = booth.disabled ? 'booth--disabled' : booth.status === 'reserved' ? 'booth--reserved' : 'booth--available';
+            %>
+            <g
+              class="booth editable-booth <%= boothClass %>"
+              data-booth-id="<%= booth.id %>"
+              data-booth-label="<%= booth.label %>"
+              data-booth-tier="<%= booth.tier %>"
+              data-booth-price="<%= booth.price || '' %>"
+              data-booth-disabled="<%= booth.disabled %>"
+              data-booth-floor="<%= booth.floor %>"
+              data-booth-floor-label="<%= booth.floorLabel || '' %>"
+              transform="translate(<%= x %>, <%= y %>)"
+              style="cursor: grab"
+            >
+              <rect width="<%= boothWidth %>" height="<%= boothHeight %>" rx="12" ry="12"></rect>
+              <text x="<%= boothWidth / 2 %>" y="46" text-anchor="middle" class="booth-label small"><%= booth.label %></text>
+              <text x="<%= boothWidth / 2 %>" y="74" text-anchor="middle" class="booth-theme small"><%= booth.theme %></text>
+              <text x="<%= boothWidth / 2 %>" y="98" text-anchor="middle" class="map-status small"><%= booth.tier %> <%= booth.price ? '• HK$' + booth.price : '' %></text>
+            </g>
+            <% });
+               offsetY += rows * (boothHeight + gapY) + floorSpacing;
+            %>
+            <% }); %>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-4">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title">Selected Booth</h5>
+        <div id="editorSelected" class="mb-3">
+          <p class="text-muted">No booth selected. Click a booth to edit.</p>
+        </div>
+
+        <div class="d-grid gap-2">
+          <div class="d-flex gap-2">
+            <button id="addBooth" class="btn btn-outline-primary">Add Booth</button>
+            <button id="saveLayout" class="btn btn-success">Save Layout</button>
+            <button id="resetPositions" class="btn btn-outline-danger">Reset Positions</button>
+          </div>
+        </div>
+
+        <hr />
+        <h5 class="card-title">Sections</h5>
+        <div id="sectionsPanel" class="mb-3">
+          <div id="sectionsList" class="list-group"></div>
+          <div class="mt-2 d-flex gap-2">
+            <button id="addSectionBtn" class="btn btn-sm btn-outline-primary">Add Section</button>
+            <button id="saveSectionsBtn" class="btn btn-sm btn-success">Save Sections</button>
+          </div>
+        </div>
+
+  <hr />
+  <h6 class="mt-3">Tips</h6>
+        <ul class="small text-muted">
+          <li>Drag booths to reposition them. Click a booth to edit its label, code or pricing.</li>
+          <li>Use "Reset Positions" to revert to the automatic grid layout.</li>
+          <li>Saved changes update the live public map immediately.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%
+  // compute initial sections: prefer event.sections if present, otherwise derive from booths
+  const sectionsList = (event.sections && event.sections.length)
+    ? event.sections.map(s => ({ floor: String(s.floor), floorLabel: s.floorLabel || '' }))
+    : (function(){
+        const f = {};
+        (event.booths || []).forEach((b) => {
+          const k = String(b.floor || '1');
+          if (!f[k]) f[k] = { floor: k, floorLabel: b.floorLabel || '' };
+        });
+        return Object.keys(f).sort().map(k => f[k]);
+      })();
+%>
+<script>window.__eventSections = <%- JSON.stringify(sectionsList) %>;</script>
+<script src="/js/booth-editor.js"></script>
+
+<%- include('partials/page-end') %>

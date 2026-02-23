@@ -1,0 +1,174 @@
+<!--
+  Cheng Tsz Hung (25017438D)
+  Awwab Hamam (22103907D)
+-->
+<%- include('partials/page-start', { pageTitle: 'Event Dashboard' }) %>
+
+<section class="mb-4 shadow-sm bg-white p-4 rounded-4">
+  <% const currentFilters = (typeof filters !== 'undefined' && filters) ? filters : { q: '', date: '', venue: '' }; %>
+  <% const venueList = (typeof venues !== 'undefined' && Array.isArray(venues)) ? venues : []; %>
+  <% const eventList = (typeof events !== 'undefined' && Array.isArray(events)) ? events : []; %>
+  <form class="row gy-3 align-items-end" method="get" action="/" id="eventSearchForm">
+    <div class="col-lg-5">
+      <label for="searchTerm" class="form-label">Search events</label>
+      <div class="position-relative">
+        <input
+          type="text"
+          class="form-control"
+          id="searchTerm"
+          name="q"
+          value="<%= currentFilters.q %>"
+          placeholder="Search by title, description, venue or time"
+          autocomplete="off"
+          data-suggest-url="/events/suggest"
+        />
+        <div class="suggestion-list" id="eventSuggestions" hidden></div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <label for="eventDate" class="form-label">Date</label>
+      <input type="date" class="form-control" id="eventDate" name="date" value="<%= currentFilters.date %>" />
+    </div>
+    <div class="col-md-3">
+      <label for="eventVenue" class="form-label">Venue</label>
+      <select class="form-select" id="eventVenue" name="venue">
+        <option value="">All venues</option>
+        <% venueList.forEach((venueOption) => { %>
+        <option value="<%= venueOption %>" <%= currentFilters.venue === venueOption ? 'selected' : '' %>><%= venueOption %></option>
+        <% }) %>
+      </select>
+    </div>
+    <div class="col-md-1 d-grid">
+      <button type="submit" class="btn btn-primary">Find</button>
+    </div>
+  </form>
+</section>
+
+<% if (!eventList.length) { %>
+<div class="alert alert-warning">No events matched your search. Try adjusting your filters.</div>
+<% } else { %>
+<section class="mb-5">
+  <h2 class="h4 mb-3">Upcoming Events</h2>
+  <div class="row g-4">
+    <% eventList.forEach((event) => { %>
+    <div class="col-xl-4 col-lg-6">
+      <div class="card h-100 event-card shadow-sm">
+        <% if (event.coverImage) { %>
+        <img src="<%= event.coverImage %>" class="card-img-top" alt="Cover image for <%= event.title %>" />
+        <% } %>
+        <div class="card-body d-flex flex-column">
+          <div class="d-flex justify-content-between align-items-start mb-3">
+            <div>
+              <span class="badge bg-primary-subtle text-primary">Event</span>
+            </div>
+            <div class="text-end small text-muted">
+              <div><%= event.date %></div>
+              <div><%= event.time %></div>
+            </div>
+          </div>
+          <h3 class="h5"><%= event.title %></h3>
+          <p class="text-muted flex-grow-1"><%= event.description %></p>
+          <div class="mb-3 small">
+            <div><strong>Venue:</strong> <%= event.venue %></div>
+            <div>
+              <strong>Pricing:</strong>
+              Premium HK$<%= event.pricing.premium.toLocaleString() %>,
+              Standard HK$<%= event.pricing.standard.toLocaleString() %>,
+              Economy HK$<%= event.pricing.economy.toLocaleString() %>
+            </div>
+          </div>
+          <div class="row g-2 mb-3">
+            <div class="col-4">
+              <div class="metric-tile text-primary">
+                <span class="metric-value"><%= event.stats.totalBooths %></span>
+                <span class="metric-label">Total</span>
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="metric-tile text-success">
+                <span class="metric-value"><%= event.stats.availableBooths %></span>
+                <span class="metric-label">Available</span>
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="metric-tile text-danger">
+                <span class="metric-value"><%= event.stats.reservedBooths %></span>
+                <span class="metric-label">Reserved</span>
+              </div>
+            </div>
+          </div>
+          <div class="d-flex justify-content-between align-items-center mt-auto">
+            <span class="text-muted small">Revenue: HK$<%= event.stats.revenue.toLocaleString() %></span>
+            <% if (currentUser) { %>
+            <a href="/events/<%= event.id %>/booths" class="btn btn-primary btn-sm">View Booth Map</a>
+            <% } else { %>
+            <a href="/login" class="btn btn-outline-primary btn-sm">Login to Reserve</a>
+            <% } %>
+          </div>
+        </div>
+      </div>
+    </div>
+    <% }) %>
+  </div>
+</section>
+<% } %>
+
+<% if (currentUser && bookings && bookings.length) { %>
+<section class="mb-5">
+  <h2 class="h4 mb-3">Recent Reservations</h2>
+  <div class="table-responsive">
+    <table class="table table-striped align-middle">
+      <thead>
+        <tr>
+          <th scope="col">Ticket</th>
+          <th scope="col">Event</th>
+          <th scope="col">Booths</th>
+          <th scope="col">Total</th>
+          <th scope="col">Booked On</th>
+          <th scope="col"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% bookings.forEach((booking) => { %>
+        <tr>
+          <td><span class="badge bg-primary"><%= booking.ticketCode %></span></td>
+          <td>
+            <% if (booking.event) { %>
+            <strong><%= booking.event.title %></strong>
+            <div class="small text-muted"><%= booking.event.date %> • <%= booking.event.venue %></div>
+            <% } else { %>
+            <span class="text-muted">Event not found</span>
+            <% } %>
+          </td>
+          <td>
+            <% if (booking.booths && booking.booths.length) { %>
+            <ul class="list-inline mb-0 small">
+              <% booking.booths.forEach((boothId) => { %>
+              <li class="list-inline-item badge rounded-pill bg-light text-dark"><%= boothId %></li>
+              <% }) %>
+            </ul>
+            <% } else if (booking.items) { %>
+            <ul class="list-inline mb-0 small">
+              <% booking.items.forEach((item) => { %>
+              <li class="list-inline-item badge rounded-pill bg-light text-dark"><%= item.label %></li>
+              <% }) %>
+            </ul>
+            <% } else { %>
+            <span class="text-muted">—</span>
+            <% } %>
+          </td>
+          <td>HK$<%= (booking.totalPrice || booking.price || 0).toLocaleString() %></td>
+          <td><%= new Date(booking.createdAt).toLocaleString() %></td>
+          <td><a href="/ticket/<%= booking.id %>" class="btn btn-sm btn-outline-secondary">View Ticket</a></td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</section>
+<% } else if (currentUser) { %>
+<p class="text-muted">You have no reservations yet. Explore the events above to reserve your booths.</p>
+<% } %>
+
+<%- include('partials/page-end') %>
+

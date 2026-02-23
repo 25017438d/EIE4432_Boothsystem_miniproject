@@ -1,0 +1,52 @@
+<!--
+  Cheng Tsz Hung (25017438D)
+  Awwab Hamam (22103907D)
+-->
+<%- include('partials/page-start', { pageTitle: 'Login' }) %>
+
+<div class="row justify-content-center">
+  <% const remembered = typeof rememberedId !== 'undefined' ? rememberedId : ''; %>
+  <div class="col-lg-5">
+    <div class="card shadow-sm">
+      <div class="card-body p-4">
+        <h1 class="h3 mb-3">Vendor Login</h1>
+        <p class="text-muted">Use your registered user ID and password to access booth reservations.</p>
+        <form action="/login" method="post" novalidate>
+          <div class="mb-3">
+            <label for="userId" class="form-label">User ID</label>
+            <input
+              type="text"
+              class="form-control"
+              id="userId"
+              name="userId"
+              required
+              value="<%= remembered %>"
+            />
+          </div>
+          <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" class="form-control" id="password" name="password" required />
+          </div>
+          <div class="form-check mb-4">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              value="true"
+              id="rememberId"
+              name="rememberId"
+              <%= remembered ? 'checked' : '' %>
+            />
+            <label class="form-check-label" for="rememberId">Remember my user ID on this device</label>
+          </div>
+          <button type="submit" class="btn btn-primary w-100">Login</button>
+        </form>
+        <div class="mt-3 text-center text-muted">
+          <p class="mb-0">Admin login: user ID <code>admin</code>, password <code>adminpass</code>.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('partials/page-end') %>
+

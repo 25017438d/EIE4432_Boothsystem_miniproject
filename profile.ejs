@@ -1,0 +1,168 @@
+<!--
+  Cheng Tsz Hung (25017438D)
+  Awwab Hamam (22103907D)
+-->
+<%- include('partials/page-start', { pageTitle: 'Booth Booking' }) %>
+
+<div class="row g-4">
+  <% const eventOptions = (typeof events !== 'undefined' && Array.isArray(events)) ? events : [event]; %>
+  <% const pricing = (event && event.pricing) ? event.pricing : { premium: event?.price || 0, standard: event?.price || 0, economy: event?.price || 0 }; %>
+  <div class="col-lg-8">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-3">
+          <div>
+            <h1 class="h4 mb-1"><%= event.title %></h1>
+            <p class="text-muted mb-0"><%= event.venue %> • <%= event.date %> • <%= event.time %></p>
+          </div>
+          <form method="get" class="d-flex align-items-center gap-2" action="/events/<%= event.id %>/booths">
+            <label for="eventSelector" class="form-label mb-0 text-muted">Switch event</label>
+            <select
+              id="eventSelector"
+              class="form-select"
+              onchange="if(this.value){ window.location.href=this.value; }"
+            >
+              <% eventOptions.forEach((eventOption) => { %>
+              <option value="/events/<%= eventOption.id %>/booths" <%= eventOption.id === event.id ? 'selected' : '' %>>
+                <%= eventOption.title %>
+              </option>
+              <% }) %>
+            </select>
+          </form>
+        </div>
+        <div class="alert alert-light border mb-3 small">
+          <strong>Pricing tiers:</strong>
+          Premium HK$<%= pricing.premium.toLocaleString() %> •
+          Standard HK$<%= pricing.standard.toLocaleString() %> •
+          Economy HK$<%= pricing.economy.toLocaleString() %>
+        </div>
+        <div class="d-flex align-items-center flex-wrap gap-2 mb-3">
+          <span class="badge bg-success">Available</span>
+          <span class="badge bg-danger">Reserved</span>
+          <span class="badge bg-secondary">Disabled</span>
+          <span class="badge bg-warning text-dark">Selected</span>
+        </div>
+        <div class="booth-map-wrapper">
+
+          <% const groupedByFloor = event.booths.reduce((acc, booth) => {
+               if (!acc[booth.floor]) {
+                 acc[booth.floor] = [];
+               }
+               acc[booth.floor].push(booth);
+               return acc;
+             }, {});
+             const floorKeys = Object.keys(groupedByFloor).sort();
+             const columns = 4;
+             const boothWidth = 140;
+             const boothHeight = 120;
+             const gapX = 30;
+             const gapY = 25;
+             const floorSpacing = 60;
+             const startY = 60;
+             let computed = startY;
+             floorKeys.forEach((fk) => {
+               const floorBooths = groupedByFloor[fk] || [];
+               const rows = Math.ceil(floorBooths.length / columns) || 1;
+               computed += rows * (boothHeight + gapY) + floorSpacing;
+             });
+             const svgHeight = Math.max(760, computed + 40);
+          %>
+
+          <svg
+            id="boothMap"
+            viewBox="0 0 800 <%= svgHeight %>"
+            preserveAspectRatio="xMidYMid meet"
+            class="w-100"
+            data-selected="<%= pendingOrder ? pendingOrder.boothIds.join(',') : '' %>"
+            data-pricing='<%- JSON.stringify(event.pricing) %>'
+          >
+            <rect x="0" y="0" width="800" height="<%= svgHeight %>" fill="#f8f9fa" stroke="#e0e0e0" stroke-width="2"></rect>
+        <% // prefer explicit event.sections labels when available
+          const sectionMap = (event.sections || []).reduce((m, s) => { m[String(s.floor)] = s.floorLabel || ''; return m; }, {});
+        %>
+        <% let currentY = startY;
+          floorKeys.forEach((floorKey) => {
+            const floorBooths = groupedByFloor[floorKey];
+            const rows = Math.ceil(floorBooths.length / columns) || 1;
+            const floorLabel = sectionMap[floorKey] || floorBooths[0]?.floorLabel || `Floor ${floorKey}`;
+            %>
+            <text data-floor="<%= floorKey %>" x="400" y="<%= currentY - 20 %>" text-anchor="middle" class="map-title"><%= floorLabel %></text>
+            <% floorBooths.forEach((booth, index) => {
+                 const row = Math.floor(index / columns);
+                 const column = index % columns;
+                 const computedX = 60 + column * (boothWidth + gapX);
+                 const computedY = currentY + row * (boothHeight + gapY);
+                 const x = (typeof booth.x !== 'undefined') ? booth.x : computedX;
+                 const y = (typeof booth.y !== 'undefined') ? booth.y : computedY;
+                 const boothPrice = pricing[booth.tier] || pricing.standard;
+                 const boothClass = booth.disabled
+                   ? 'booth--disabled'
+                   : booth.status === 'reserved'
+                   ? 'booth--reserved'
+                   : 'booth--available';
+                 const tierLabel = booth.tier ? (booth.tier.charAt(0).toUpperCase() + booth.tier.slice(1)) : 'Standard';
+            %>
+            <g
+              class="booth <%= boothClass %>"
+              data-booth-id="<%= booth.id %>"
+              data-label="<%= booth.label %>"
+              data-theme="<%= booth.theme %>"
+              data-section="<%= booth.section %>"
+              data-floor="<%= booth.floor %>"
+              data-floor-label="<%= booth.floorLabel %>"
+              data-tier="<%= booth.tier %>"
+              data-price="<%= boothPrice %>"
+              data-disabled="<%= booth.disabled %>"
+              transform="translate(<%= x %>, <%= y %>)"
+            >
+              <rect width="<%= boothWidth %>" height="<%= boothHeight %>" rx="16" ry="16"></rect>
+              <text x="<%= boothWidth / 2 %>" y="48" text-anchor="middle" class="booth-label"><%= booth.label %></text>
+              <text x="<%= boothWidth / 2 %>" y="74" text-anchor="middle" class="booth-theme"><%= booth.theme %></text>
+              <text x="<%= boothWidth / 2 %>" y="96" text-anchor="middle" class="booth-tier">
+                <%= tierLabel %> • HK$<%= boothPrice %>
+              </text>
+            </g>
+            <% });
+               currentY += rows * (boothHeight + gapY) + floorSpacing;
+            %>
+            <% }); %>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-4">
+    <div class="card shadow-sm sticky-top" style="top: 90px;">
+      <div class="card-body">
+        <h2 class="h5">Reservation Summary</h2>
+        <p class="text-muted">Select multiple booths across both floors. Pricing updates instantly.</p>
+        <div id="selectedBoothsList" class="selected-booths mb-3">
+          <p class="text-muted mb-0">No booths selected yet.</p>
+        </div>
+        <div class="border-top pt-3 mt-3">
+          <div class="d-flex justify-content-between align-items-center">
+            <span class="fs-6">Total</span>
+            <strong>HK$<span id="summaryTotal">0</span></strong>
+          </div>
+          <div class="small text-muted" id="summaryTierBreakdown">—</div>
+        </div>
+        <form action="/booths/select" method="post" class="mt-4" id="boothSelectionForm">
+          <input type="hidden" name="eventId" value="<%= event.id %>" />
+          <input type="hidden" name="boothIds" id="boothIdsField" />
+          <button type="submit" class="btn btn-primary w-100" id="confirmSelection" disabled>
+            Continue to Payment
+          </button>
+        </form>
+        <% if (pendingOrder) { %>
+        <div class="alert alert-info mt-3 small">
+          You have a pending selection:
+          <strong><%= pendingOrder.boothIds.join(', ') %></strong>. You can proceed to payment or update your selection.
+        </div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('partials/page-end') %>
+

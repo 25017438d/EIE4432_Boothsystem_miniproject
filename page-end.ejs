@@ -1,0 +1,165 @@
+<!--
+  Cheng Tsz Hung (25017438D)
+  Awwab Hamam (22103907D)
+-->
+<%- include('partials/page-start', { pageTitle: 'Event Management' }) %>
+
+<div class="row g-4 align-items-start">
+  <div class="col-lg-4">
+    <div class="card shadow-sm">
+      <div class="card-body p-4">
+        <h1 class="h5 mb-3">Add New Event</h1>
+        <p class="text-muted">Create additional event editions. A fresh booth map is generated automatically.</p>
+        <form action="/admin/events" method="post" class="row g-3" novalidate>
+          <div class="col-12">
+            <label for="title" class="form-label">Title</label>
+            <input type="text" class="form-control" id="title" name="title" required />
+          </div>
+          <div class="col-12">
+            <label for="description" class="form-label">Description</label>
+            <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
+          </div>
+          <div class="col-md-6">
+            <label for="date" class="form-label">Date</label>
+            <input type="date" class="form-control" id="date" name="date" required />
+          </div>
+          <div class="col-md-6">
+            <label for="time" class="form-label">Time</label>
+            <input type="text" class="form-control" id="time" name="time" placeholder="10:00 - 21:00" required />
+          </div>
+          <div class="col-12">
+            <label for="venue" class="form-label">Venue</label>
+            <input type="text" class="form-control" id="venue" name="venue" required />
+          </div>
+          <div class="col-12">
+            <label for="coverImage" class="form-label">Cover Image URL</label>
+            <input type="url" class="form-control" id="coverImage" name="coverImage" placeholder="https://example.com/event-banner.jpg" />
+          </div>
+          <div class="col-12">
+            <div class="alert alert-light border small">
+              <strong>Pricing tiers:</strong> Provide at least two tiers to differentiate booth value.
+            </div>
+          </div>
+          <div class="col-md-4">
+            <label for="premiumPrice" class="form-label">Premium (HK$)</label>
+            <input type="number" min="0" class="form-control" id="premiumPrice" name="premiumPrice" required />
+          </div>
+          <div class="col-md-4">
+            <label for="standardPrice" class="form-label">Standard (HK$)</label>
+            <input type="number" min="0" class="form-control" id="standardPrice" name="standardPrice" required />
+          </div>
+          <div class="col-md-4">
+            <label for="economyPrice" class="form-label">Economy (HK$)</label>
+            <input type="number" min="0" class="form-control" id="economyPrice" name="economyPrice" required />
+          </div>
+          <div class="col-12">
+            <button type="submit" class="btn btn-primary w-100">Create Event</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-8">
+    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+      <h2 class="h5 mb-0">Existing Events</h2>
+      <form class="d-flex align-items-center gap-2" method="get" action="/admin/events">
+        <input
+          type="search"
+          class="form-control"
+          name="q"
+          placeholder="Search by title, venue, description"
+          value="<%= searchTerm || '' %>"
+        />
+        <button type="submit" class="btn btn-outline-primary">Search</button>
+      </form>
+    </div>
+    <% if (!events.length) { %>
+    <p class="text-muted">No events matched your filters.</p>
+    <% } else { %>
+    <div class="row g-4">
+      <% events.forEach((event) => {
+           const total = event.booths.length;
+           const reserved = event.booths.filter((b) => b.status === 'reserved').length;
+           const disabled = event.booths.filter((b) => b.disabled).length;
+           const available = total - reserved - disabled;
+      %>
+      <div class="col-12">
+        <div class="card shadow-sm">
+          <div class="row g-0">
+            <% if (event.coverImage) { %>
+            <div class="col-md-4">
+              <img src="<%= event.coverImage %>" class="img-fluid rounded-start h-100 object-fit-cover" alt="<%= event.title %> cover" />
+            </div>
+            <% } %>
+            <div class="col-md-<%= event.coverImage ? '8' : '12' %>">
+              <div class="card-body">
+                <div class="d-flex justify-content-between flex-wrap gap-2 mb-2">
+                  <h3 class="h5 mb-0"><%= event.title %></h3>
+                  <span class="badge bg-light text-dark">Event ID: <%= event.id %></span>
+                </div>
+                <p class="text-muted small mb-3"><%= event.description %></p>
+                <div class="row g-2 small mb-3">
+                  <div class="col-sm-4"><strong>Date:</strong> <%= event.date %></div>
+                  <div class="col-sm-4"><strong>Time:</strong> <%= event.time %></div>
+                  <div class="col-sm-4"><strong>Venue:</strong> <%= event.venue %></div>
+                </div>
+                <div class="d-flex flex-wrap gap-2 mb-3 small">
+                  <span class="badge bg-success-subtle text-success">Available: <%= available %></span>
+                  <span class="badge bg-danger-subtle text-danger">Reserved: <%= reserved %></span>
+                  <span class="badge bg-secondary-subtle text-secondary">Disabled: <%= disabled %></span>
+                  <span class="badge bg-primary-subtle text-primary">Revenue: HK$<%= (event.stats?.revenue || 0).toLocaleString() %></span>
+                </div>
+                <form action="/admin/events/<%= event.id %>" method="post" class="row g-2 align-items-end">
+                  <div class="col-sm-6 col-md-4">
+                    <label class="form-label small" for="title-<%= event.id %>">Title</label>
+                    <input type="text" class="form-control" id="title-<%= event.id %>" name="title" value="<%= event.title %>" />
+                  </div>
+                  <div class="col-sm-6 col-md-4">
+                    <label class="form-label small" for="date-<%= event.id %>">Date</label>
+                    <input type="date" class="form-control" id="date-<%= event.id %>" name="date" value="<%= event.date %>" />
+                  </div>
+                  <div class="col-sm-6 col-md-4">
+                    <label class="form-label small" for="time-<%= event.id %>">Time</label>
+                    <input type="text" class="form-control" id="time-<%= event.id %>" name="time" value="<%= event.time %>" />
+                  </div>
+                  <div class="col-sm-6 col-md-6">
+                    <label class="form-label small" for="venue-<%= event.id %>">Venue</label>
+                    <input type="text" class="form-control" id="venue-<%= event.id %>" name="venue" value="<%= event.venue %>" />
+                  </div>
+                  <div class="col-sm-6 col-md-6">
+                    <label class="form-label small" for="coverImage-<%= event.id %>">Cover Image URL</label>
+                    <input type="url" class="form-control" id="coverImage-<%= event.id %>" name="coverImage" value="<%= event.coverImage || '' %>" />
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label small" for="premiumPrice-<%= event.id %>">Premium (HK$)</label>
+                    <input type="number" class="form-control" id="premiumPrice-<%= event.id %>" name="premiumPrice" value="<%= event.pricing.premium %>" />
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label small" for="standardPrice-<%= event.id %>">Standard (HK$)</label>
+                    <input type="number" class="form-control" id="standardPrice-<%= event.id %>" name="standardPrice" value="<%= event.pricing.standard %>" />
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label small" for="economyPrice-<%= event.id %>">Economy (HK$)</label>
+                    <input type="number" class="form-control" id="economyPrice-<%= event.id %>" name="economyPrice" value="<%= event.pricing.economy %>" />
+                  </div>
+                  <div class="col-12">
+                    <label class="form-label small" for="description-<%= event.id %>">Description</label>
+                    <textarea class="form-control" id="description-<%= event.id %>" name="description" rows="2"><%= event.description %></textarea>
+                  </div>
+                  <div class="col-12 d-flex justify-content-end">
+                    <button type="submit" class="btn btn-outline-primary btn-sm">Update Event</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <% }) %>
+    </div>
+    <% } %>
+  </div>
+</div>
+
+<%- include('partials/page-end') %>
+

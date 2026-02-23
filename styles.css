@@ -1,0 +1,1003 @@
+{
+  "users": [
+    {
+      "userId": "admin",
+      "passwordHash": "$2b$10$NVSAKvw2VHbV.NGrVxxB3OhKir9nr0CVQAGqCErh4xD6iAuR3KTdq",
+      "nickname": "Administrator",
+      "email": "admin@example.com",
+      "gender": "Other",
+      "birthdate": "1990-01-01",
+      "role": "admin",
+      "createdAt": "2025-11-08T10:14:59.208Z",
+      "updatedAt": "2025-11-08T10:14:59.208Z",
+      "profileImage": null
+    },
+    {
+      "userId": "TestUser",
+      "passwordHash": "$2b$10$gAj0cyev14i2fgMwqn.xCudsQxHo1zDt.ehye4Iu/ULLg4QQNuc.K",
+      "nickname": "Test User",
+      "email": "testing@gmail.com",
+      "gender": "Prefer not to say",
+      "birthdate": "1990-02-22",
+      "profileImage": null,
+      "role": "user",
+      "createdAt": "2025-11-25T13:56:16.084Z",
+      "updatedAt": "2025-11-25T13:56:16.084Z"
+    }
+  ],
+  "events": [
+    {
+      "id": "event-1",
+      "title": "Hong Kong Food Carnival 2025",
+      "description": "Discover themed culinary zones, wellness experiences, and artisanal treats across our harbour-view halls.",
+      "date": "2025-12-12",
+      "time": "10:00 - 21:00",
+      "venue": "AsiaWorld-Expo Halls 5-7",
+      "coverImage": "https://images.unsplash.com/photo-1528712306091-ed0763094c98?auto=format&fit=crop&w=1200&q=80",
+      "pricing": {
+        "premium": 820,
+        "standard": 620,
+        "economy": 480
+      },
+      "createdAt": "2025-11-08T10:14:59.146Z",
+      "updatedAt": "2025-11-08T10:14:59.146Z",
+      "booths": [
+        {
+          "id": "A1",
+          "label": "A1",
+          "status": "available",
+          "disabled": false,
+          "tier": "premium",
+          "floor": "1",
+          "floorLabel": "Harbour View Hall",
+          "section": "A-Section",
+          "theme": "Health Preserving Zone"
+        },
+        {
+          "id": "A2",
+          "label": "A2",
+          "status": "available",
+          "disabled": false,
+          "tier": "premium",
+          "floor": "1",
+          "floorLabel": "Harbour View Hall",
+          "section": "A-Section",
+          "theme": "Health Preserving Zone"
+        },
+        {
+          "id": "A3",
+          "label": "A3",
+          "status": "available",
+          "disabled": false,
+          "tier": "premium",
+          "floor": "1",
+          "floorLabel": "Harbour View Hall",
+          "section": "A-Section",
+          "theme": "Health Preserving Zone"
+        },
+        {
+          "id": "A4",
+          "label": "A4",
+          "status": "available",
+          "disabled": false,
+          "tier": "premium",
+          "floor": "1",
+          "floorLabel": "Harbour View Hall",
+          "section": "A-Section",
+          "theme": "Health Preserving Zone"
+        },
+        {
+          "id": "B1",
+          "label": "B1",
+          "status": "available",
+          "disabled": false,
+          "tier": "premium",
+          "floor": "1",
+          "floorLabel": "Harbour View Hall",
+          "section": "B-Section",
+          "theme": "Leisure Food Zone"
+        },
+        {
+          "id": "B2",
+          "label": "B2",
+          "status": "available",
+          "disabled": false,
+          "tier": "premium",
+          "floor": "1",
+          "floorLabel": "Harbour View Hall",
+          "section": "B-Section",
+          "theme": "Leisure Food Zone"
+        },
+        {
+          "id": "B3",
+          "label": "B3",
+          "status": "available",
+          "disabled": false,
+          "tier": "premium",
+          "floor": "1",
+          "floorLabel": "Harbour View Hall",
+          "section": "B-Section",
+          "theme": "Leisure Food Zone"
+        },
+        {
+          "id": "B4",
+          "label": "B4",
+          "status": "reserved",
+          "disabled": false,
+          "tier": "premium",
+          "floor": "1",
+          "floorLabel": "Harbour View Hall",
+          "section": "B-Section",
+          "theme": "Leisure Food Zone"
+        },
+        {
+          "id": "C1",
+          "label": "C1",
+          "status": "available",
+          "disabled": false,
+          "tier": "standard",
+          "floor": "1",
+          "floorLabel": "Harbour View Hall",
+          "section": "C-Section",
+          "theme": "International Flavors"
+        },
+        {
+          "id": "C2",
+          "label": "C2",
+          "status": "available",
+          "disabled": false,
+          "tier": "standard",
+          "floor": "1",
+          "floorLabel": "Harbour View Hall",
+          "section": "C-Section",
+          "theme": "International Flavors"
+        },
+        {
+          "id": "C3",
+          "label": "C3",
+          "status": "available",
+          "disabled": false,
+          "tier": "standard",
+          "floor": "1",
+          "floorLabel": "Harbour View Hall",
+          "section": "C-Section",
+          "theme": "International Flavors"
+        },
+        {
+          "id": "C4",
+          "label": "C4",
+          "status": "reserved",
+          "disabled": false,
+          "tier": "standard",
+          "floor": "1",
+          "floorLabel": "Harbour View Hall",
+          "section": "C-Section",
+          "theme": "International Flavors"
+        },
+        {
+          "id": "D1",
+          "label": "D1",
+          "status": "available",
+          "disabled": false,
+          "tier": "economy",
+          "floor": "1",
+          "floorLabel": "Harbour View Hall",
+          "section": "D-Section",
+          "theme": "Organic Delights"
+        },
+        {
+          "id": "D2",
+          "label": "D2",
+          "status": "available",
+          "disabled": false,
+          "tier": "economy",
+          "floor": "1",
+          "floorLabel": "Harbour View Hall",
+          "section": "D-Section",
+          "theme": "Organic Delights"
+        },
+        {
+          "id": "D3",
+          "label": "D3",
+          "status": "reserved",
+          "disabled": false,
+          "tier": "economy",
+          "floor": "1",
+          "floorLabel": "Harbour View Hall",
+          "section": "D-Section",
+          "theme": "Organic Delights"
+        },
+        {
+          "id": "D4",
+          "label": "D4",
+          "status": "available",
+          "disabled": false,
+          "tier": "economy",
+          "floor": "1",
+          "floorLabel": "Harbour View Hall",
+          "section": "D-Section",
+          "theme": "Organic Delights"
+        },
+        {
+          "id": "E1",
+          "label": "E1",
+          "status": "available",
+          "disabled": false,
+          "tier": "economy",
+          "floor": "1",
+          "floorLabel": "Harbour View Hall",
+          "section": "E-Section",
+          "theme": "Beverage Hub"
+        },
+        {
+          "id": "E2",
+          "label": "E2",
+          "status": "available",
+          "disabled": false,
+          "tier": "economy",
+          "floor": "1",
+          "floorLabel": "Harbour View Hall",
+          "section": "E-Section",
+          "theme": "Beverage Hub"
+        },
+        {
+          "id": "E3",
+          "label": "E3",
+          "status": "available",
+          "disabled": false,
+          "tier": "economy",
+          "floor": "1",
+          "floorLabel": "Harbour View Hall",
+          "section": "E-Section",
+          "theme": "Beverage Hub"
+        },
+        {
+          "id": "E4",
+          "label": "E4",
+          "status": "available",
+          "disabled": false,
+          "tier": "economy",
+          "floor": "1",
+          "floorLabel": "Harbour View Hall",
+          "section": "E-Section",
+          "theme": "Beverage Hub"
+        },
+        {
+          "id": "F1",
+          "label": "F1",
+          "status": "available",
+          "disabled": false,
+          "tier": "premium",
+          "floor": "2",
+          "floorLabel": "Sky Garden Pavilion",
+          "section": "F-Section",
+          "theme": "Dessert Boulevard"
+        },
+        {
+          "id": "F2",
+          "label": "F2",
+          "status": "available",
+          "disabled": false,
+          "tier": "premium",
+          "floor": "2",
+          "floorLabel": "Sky Garden Pavilion",
+          "section": "F-Section",
+          "theme": "Dessert Boulevard"
+        },
+        {
+          "id": "F3",
+          "label": "F3",
+          "status": "available",
+          "disabled": false,
+          "tier": "premium",
+          "floor": "2",
+          "floorLabel": "Sky Garden Pavilion",
+          "section": "F-Section",
+          "theme": "Dessert Boulevard"
+        },
+        {
+          "id": "F4",
+          "label": "F4",
+          "status": "available",
+          "disabled": false,
+          "tier": "premium",
+          "floor": "2",
+          "floorLabel": "Sky Garden Pavilion",
+          "section": "F-Section",
+          "theme": "Dessert Boulevard"
+        },
+        {
+          "id": "G1",
+          "label": "G1",
+          "status": "available",
+          "disabled": false,
+          "tier": "standard",
+          "floor": "2",
+          "floorLabel": "Sky Garden Pavilion",
+          "section": "G-Section",
+          "theme": "International Flavors"
+        },
+        {
+          "id": "G2",
+          "label": "G2",
+          "status": "available",
+          "disabled": false,
+          "tier": "standard",
+          "floor": "2",
+          "floorLabel": "Sky Garden Pavilion",
+          "section": "G-Section",
+          "theme": "International Flavors"
+        },
+        {
+          "id": "G3",
+          "label": "G3",
+          "status": "available",
+          "disabled": false,
+          "tier": "standard",
+          "floor": "2",
+          "floorLabel": "Sky Garden Pavilion",
+          "section": "G-Section",
+          "theme": "International Flavors"
+        },
+        {
+          "id": "G4",
+          "label": "G4",
+          "status": "available",
+          "disabled": false,
+          "tier": "standard",
+          "floor": "2",
+          "floorLabel": "Sky Garden Pavilion",
+          "section": "G-Section",
+          "theme": "International Flavors"
+        },
+        {
+          "id": "H1",
+          "label": "H1",
+          "status": "available",
+          "disabled": false,
+          "tier": "standard",
+          "floor": "2",
+          "floorLabel": "Sky Garden Pavilion",
+          "section": "H-Section",
+          "theme": "Leisure Food Zone"
+        },
+        {
+          "id": "H2",
+          "label": "H2",
+          "status": "available",
+          "disabled": false,
+          "tier": "standard",
+          "floor": "2",
+          "floorLabel": "Sky Garden Pavilion",
+          "section": "H-Section",
+          "theme": "Leisure Food Zone"
+        },
+        {
+          "id": "H3",
+          "label": "H3",
+          "status": "available",
+          "disabled": false,
+          "tier": "standard",
+          "floor": "2",
+          "floorLabel": "Sky Garden Pavilion",
+          "section": "H-Section",
+          "theme": "Leisure Food Zone"
+        },
+        {
+          "id": "H4",
+          "label": "H4",
+          "status": "available",
+          "disabled": false,
+          "tier": "standard",
+          "floor": "2",
+          "floorLabel": "Sky Garden Pavilion",
+          "section": "H-Section",
+          "theme": "Leisure Food Zone"
+        },
+        {
+          "id": "J1",
+          "label": "J1",
+          "status": "available",
+          "disabled": false,
+          "tier": "economy",
+          "floor": "2",
+          "floorLabel": "Sky Garden Pavilion",
+          "section": "J-Section",
+          "theme": "Organic Delights"
+        },
+        {
+          "id": "J2",
+          "label": "J2",
+          "status": "available",
+          "disabled": false,
+          "tier": "economy",
+          "floor": "2",
+          "floorLabel": "Sky Garden Pavilion",
+          "section": "J-Section",
+          "theme": "Organic Delights"
+        },
+        {
+          "id": "J3",
+          "label": "J3",
+          "status": "available",
+          "disabled": false,
+          "tier": "economy",
+          "floor": "2",
+          "floorLabel": "Sky Garden Pavilion",
+          "section": "J-Section",
+          "theme": "Organic Delights"
+        },
+        {
+          "id": "J4",
+          "label": "J4",
+          "status": "available",
+          "disabled": false,
+          "tier": "economy",
+          "floor": "2",
+          "floorLabel": "Sky Garden Pavilion",
+          "section": "J-Section",
+          "theme": "Organic Delights"
+        },
+        {
+          "id": "K1",
+          "label": "K1",
+          "status": "available",
+          "disabled": false,
+          "tier": "economy",
+          "floor": "2",
+          "floorLabel": "Sky Garden Pavilion",
+          "section": "K-Section",
+          "theme": "Beverage Hub"
+        },
+        {
+          "id": "K2",
+          "label": "K2",
+          "status": "available",
+          "disabled": false,
+          "tier": "economy",
+          "floor": "2",
+          "floorLabel": "Sky Garden Pavilion",
+          "section": "K-Section",
+          "theme": "Beverage Hub"
+        },
+        {
+          "id": "K3",
+          "label": "K3",
+          "status": "available",
+          "disabled": false,
+          "tier": "economy",
+          "floor": "2",
+          "floorLabel": "Sky Garden Pavilion",
+          "section": "K-Section",
+          "theme": "Beverage Hub"
+        },
+        {
+          "id": "K4",
+          "label": "K4",
+          "status": "available",
+          "disabled": false,
+          "tier": "economy",
+          "floor": "2",
+          "floorLabel": "Sky Garden Pavilion",
+          "section": "K-Section",
+          "theme": "Beverage Hub"
+        }
+      ]
+    },
+    {
+      "id": "event-2",
+      "title": "Night Bazaar Street Feast",
+      "description": "An evening showcase of fusion street food, live entertainment, and interactive culinary workshops.",
+      "date": "2026-03-18",
+      "time": "17:00 - 23:00",
+      "venue": "West Kowloon Cultural District",
+      "coverImage": "https://images.unsplash.com/photo-1543353071-10c8ba85a904?auto=format&fit=crop&w=1200&q=80",
+      "pricing": {
+        "premium": 760,
+        "standard": 560,
+        "economy": 420
+      },
+      "createdAt": "2025-11-08T10:14:59.146Z",
+      "updatedAt": "2025-11-08T10:14:59.146Z",
+      "booths": [
+        {
+          "id": "A1-B",
+          "label": "A1-B",
+          "status": "available",
+          "disabled": false,
+          "tier": "premium",
+          "floor": "1",
+          "floorLabel": "Harbour View Hall",
+          "section": "A-Section",
+          "theme": "Dessert Boulevard"
+        },
+        {
+          "id": "A2-B",
+          "label": "A2-B",
+          "status": "available",
+          "disabled": false,
+          "tier": "premium",
+          "floor": "1",
+          "floorLabel": "Harbour View Hall",
+          "section": "A-Section",
+          "theme": "International Flavors"
+        },
+        {
+          "id": "A3-B",
+          "label": "A3-B",
+          "status": "available",
+          "disabled": false,
+          "tier": "premium",
+          "floor": "1",
+          "floorLabel": "Harbour View Hall",
+          "section": "A-Section",
+          "theme": "Dessert Boulevard"
+        },
+        {
+          "id": "A4-B",
+          "label": "A4-B",
+          "status": "available",
+          "disabled": false,
+          "tier": "premium",
+          "floor": "1",
+          "floorLabel": "Harbour View Hall",
+          "section": "A-Section",
+          "theme": "International Flavors"
+        },
+        {
+          "id": "B1-B",
+          "label": "B1-B",
+          "status": "available",
+          "disabled": false,
+          "tier": "premium",
+          "floor": "1",
+          "floorLabel": "Harbour View Hall",
+          "section": "B-Section",
+          "theme": "Dessert Boulevard"
+        },
+        {
+          "id": "B2-B",
+          "label": "B2-B",
+          "status": "available",
+          "disabled": false,
+          "tier": "premium",
+          "floor": "1",
+          "floorLabel": "Harbour View Hall",
+          "section": "B-Section",
+          "theme": "International Flavors"
+        },
+        {
+          "id": "B3-B",
+          "label": "B3-B",
+          "status": "available",
+          "disabled": false,
+          "tier": "premium",
+          "floor": "1",
+          "floorLabel": "Harbour View Hall",
+          "section": "B-Section",
+          "theme": "Dessert Boulevard"
+        },
+        {
+          "id": "B4-B",
+          "label": "B4-B",
+          "status": "available",
+          "disabled": false,
+          "tier": "premium",
+          "floor": "1",
+          "floorLabel": "Harbour View Hall",
+          "section": "B-Section",
+          "theme": "International Flavors"
+        },
+        {
+          "id": "C1-B",
+          "label": "C1-B",
+          "status": "available",
+          "disabled": false,
+          "tier": "standard",
+          "floor": "1",
+          "floorLabel": "Harbour View Hall",
+          "section": "C-Section",
+          "theme": "Dessert Boulevard"
+        },
+        {
+          "id": "C2-B",
+          "label": "C2-B",
+          "status": "available",
+          "disabled": false,
+          "tier": "standard",
+          "floor": "1",
+          "floorLabel": "Harbour View Hall",
+          "section": "C-Section",
+          "theme": "International Flavors"
+        },
+        {
+          "id": "C3-B",
+          "label": "C3-B",
+          "status": "available",
+          "disabled": false,
+          "tier": "standard",
+          "floor": "1",
+          "floorLabel": "Harbour View Hall",
+          "section": "C-Section",
+          "theme": "Dessert Boulevard"
+        },
+        {
+          "id": "C4-B",
+          "label": "C4-B",
+          "status": "available",
+          "disabled": false,
+          "tier": "standard",
+          "floor": "1",
+          "floorLabel": "Harbour View Hall",
+          "section": "C-Section",
+          "theme": "International Flavors"
+        },
+        {
+          "id": "D1-B",
+          "label": "D1-B",
+          "status": "available",
+          "disabled": false,
+          "tier": "economy",
+          "floor": "1",
+          "floorLabel": "Harbour View Hall",
+          "section": "D-Section",
+          "theme": "Dessert Boulevard"
+        },
+        {
+          "id": "D2-B",
+          "label": "D2-B",
+          "status": "available",
+          "disabled": false,
+          "tier": "economy",
+          "floor": "1",
+          "floorLabel": "Harbour View Hall",
+          "section": "D-Section",
+          "theme": "International Flavors"
+        },
+        {
+          "id": "D3-B",
+          "label": "D3-B",
+          "status": "available",
+          "disabled": false,
+          "tier": "economy",
+          "floor": "1",
+          "floorLabel": "Harbour View Hall",
+          "section": "D-Section",
+          "theme": "Dessert Boulevard"
+        },
+        {
+          "id": "D4-B",
+          "label": "D4-B",
+          "status": "available",
+          "disabled": false,
+          "tier": "economy",
+          "floor": "1",
+          "floorLabel": "Harbour View Hall",
+          "section": "D-Section",
+          "theme": "International Flavors"
+        },
+        {
+          "id": "E1-B",
+          "label": "E1-B",
+          "status": "available",
+          "disabled": false,
+          "tier": "economy",
+          "floor": "1",
+          "floorLabel": "Harbour View Hall",
+          "section": "E-Section",
+          "theme": "Dessert Boulevard"
+        },
+        {
+          "id": "E2-B",
+          "label": "E2-B",
+          "status": "available",
+          "disabled": false,
+          "tier": "economy",
+          "floor": "1",
+          "floorLabel": "Harbour View Hall",
+          "section": "E-Section",
+          "theme": "International Flavors"
+        },
+        {
+          "id": "E3-B",
+          "label": "E3-B",
+          "status": "available",
+          "disabled": false,
+          "tier": "economy",
+          "floor": "1",
+          "floorLabel": "Harbour View Hall",
+          "section": "E-Section",
+          "theme": "Dessert Boulevard"
+        },
+        {
+          "id": "E4-B",
+          "label": "E4-B",
+          "status": "available",
+          "disabled": false,
+          "tier": "economy",
+          "floor": "1",
+          "floorLabel": "Harbour View Hall",
+          "section": "E-Section",
+          "theme": "International Flavors"
+        },
+        {
+          "id": "F1-B",
+          "label": "F1-B",
+          "status": "available",
+          "disabled": false,
+          "tier": "premium",
+          "floor": "2",
+          "floorLabel": "Sky Garden Pavilion",
+          "section": "F-Section",
+          "theme": "Dessert Boulevard"
+        },
+        {
+          "id": "F2-B",
+          "label": "F2-B",
+          "status": "available",
+          "disabled": false,
+          "tier": "premium",
+          "floor": "2",
+          "floorLabel": "Sky Garden Pavilion",
+          "section": "F-Section",
+          "theme": "International Flavors"
+        },
+        {
+          "id": "F3-B",
+          "label": "F3-B",
+          "status": "available",
+          "disabled": false,
+          "tier": "premium",
+          "floor": "2",
+          "floorLabel": "Sky Garden Pavilion",
+          "section": "F-Section",
+          "theme": "Dessert Boulevard"
+        },
+        {
+          "id": "F4-B",
+          "label": "F4-B",
+          "status": "available",
+          "disabled": false,
+          "tier": "premium",
+          "floor": "2",
+          "floorLabel": "Sky Garden Pavilion",
+          "section": "F-Section",
+          "theme": "International Flavors"
+        },
+        {
+          "id": "G1-B",
+          "label": "G1-B",
+          "status": "available",
+          "disabled": false,
+          "tier": "standard",
+          "floor": "2",
+          "floorLabel": "Sky Garden Pavilion",
+          "section": "G-Section",
+          "theme": "Dessert Boulevard"
+        },
+        {
+          "id": "G2-B",
+          "label": "G2-B",
+          "status": "available",
+          "disabled": false,
+          "tier": "standard",
+          "floor": "2",
+          "floorLabel": "Sky Garden Pavilion",
+          "section": "G-Section",
+          "theme": "International Flavors"
+        },
+        {
+          "id": "G3-B",
+          "label": "G3-B",
+          "status": "available",
+          "disabled": false,
+          "tier": "standard",
+          "floor": "2",
+          "floorLabel": "Sky Garden Pavilion",
+          "section": "G-Section",
+          "theme": "Dessert Boulevard"
+        },
+        {
+          "id": "G4-B",
+          "label": "G4-B",
+          "status": "available",
+          "disabled": false,
+          "tier": "standard",
+          "floor": "2",
+          "floorLabel": "Sky Garden Pavilion",
+          "section": "G-Section",
+          "theme": "International Flavors"
+        },
+        {
+          "id": "H1-B",
+          "label": "H1-B",
+          "status": "available",
+          "disabled": false,
+          "tier": "standard",
+          "floor": "2",
+          "floorLabel": "Sky Garden Pavilion",
+          "section": "H-Section",
+          "theme": "Dessert Boulevard"
+        },
+        {
+          "id": "H2-B",
+          "label": "H2-B",
+          "status": "available",
+          "disabled": false,
+          "tier": "standard",
+          "floor": "2",
+          "floorLabel": "Sky Garden Pavilion",
+          "section": "H-Section",
+          "theme": "International Flavors"
+        },
+        {
+          "id": "H3-B",
+          "label": "H3-B",
+          "status": "available",
+          "disabled": false,
+          "tier": "standard",
+          "floor": "2",
+          "floorLabel": "Sky Garden Pavilion",
+          "section": "H-Section",
+          "theme": "Dessert Boulevard"
+        },
+        {
+          "id": "H4-B",
+          "label": "H4-B",
+          "status": "available",
+          "disabled": false,
+          "tier": "standard",
+          "floor": "2",
+          "floorLabel": "Sky Garden Pavilion",
+          "section": "H-Section",
+          "theme": "International Flavors"
+        },
+        {
+          "id": "J1-B",
+          "label": "J1-B",
+          "status": "available",
+          "disabled": false,
+          "tier": "economy",
+          "floor": "2",
+          "floorLabel": "Sky Garden Pavilion",
+          "section": "J-Section",
+          "theme": "Dessert Boulevard"
+        },
+        {
+          "id": "J2-B",
+          "label": "J2-B",
+          "status": "available",
+          "disabled": false,
+          "tier": "economy",
+          "floor": "2",
+          "floorLabel": "Sky Garden Pavilion",
+          "section": "J-Section",
+          "theme": "International Flavors"
+        },
+        {
+          "id": "J3-B",
+          "label": "J3-B",
+          "status": "available",
+          "disabled": false,
+          "tier": "economy",
+          "floor": "2",
+          "floorLabel": "Sky Garden Pavilion",
+          "section": "J-Section",
+          "theme": "Dessert Boulevard"
+        },
+        {
+          "id": "J4-B",
+          "label": "J4-B",
+          "status": "available",
+          "disabled": false,
+          "tier": "economy",
+          "floor": "2",
+          "floorLabel": "Sky Garden Pavilion",
+          "section": "J-Section",
+          "theme": "International Flavors"
+        },
+        {
+          "id": "K1-B",
+          "label": "K1-B",
+          "status": "available",
+          "disabled": false,
+          "tier": "economy",
+          "floor": "2",
+          "floorLabel": "Sky Garden Pavilion",
+          "section": "K-Section",
+          "theme": "Dessert Boulevard"
+        },
+        {
+          "id": "K2-B",
+          "label": "K2-B",
+          "status": "available",
+          "disabled": false,
+          "tier": "economy",
+          "floor": "2",
+          "floorLabel": "Sky Garden Pavilion",
+          "section": "K-Section",
+          "theme": "International Flavors"
+        },
+        {
+          "id": "K3-B",
+          "label": "K3-B",
+          "status": "available",
+          "disabled": false,
+          "tier": "economy",
+          "floor": "2",
+          "floorLabel": "Sky Garden Pavilion",
+          "section": "K-Section",
+          "theme": "Dessert Boulevard"
+        },
+        {
+          "id": "K4-B",
+          "label": "K4-B",
+          "status": "available",
+          "disabled": false,
+          "tier": "economy",
+          "floor": "2",
+          "floorLabel": "Sky Garden Pavilion",
+          "section": "K-Section",
+          "theme": "International Flavors"
+        }
+      ]
+    }
+  ],
+  "bookings": [
+    {
+      "id": "B1762596935136",
+      "eventId": "event-1",
+      "booths": [
+        "B4",
+        "C4",
+        "D3"
+      ],
+      "userId": "admin",
+      "price": 1920,
+      "totalPrice": 1920,
+      "status": "paid",
+      "ticketCode": "HKFC-3ACF1CA9",
+      "createdAt": "2025-11-08T10:15:35.137Z",
+      "payment": {
+        "method": "credit-card",
+        "maskedCard": "**** **** **** asd",
+        "nameOnCard": "asd",
+        "expiry": "asd"
+      },
+      "items": [
+        {
+          "id": "B4",
+          "label": "B4",
+          "tier": "premium",
+          "price": 820
+        },
+        {
+          "id": "C4",
+          "label": "C4",
+          "tier": "standard",
+          "price": 620
+        },
+        {
+          "id": "D3",
+          "label": "D3",
+          "tier": "economy",
+          "price": 480
+        }
+      ]
+    }
+  ],
+  "transactions": [
+    {
+      "id": "txn-1762596935137",
+      "bookingId": "B1762596935136",
+      "userId": "admin",
+      "eventId": "event-1",
+      "amount": 1920,
+      "createdAt": "2025-11-08T10:15:35.137Z",
+      "details": {
+        "method": "credit-card",
+        "maskedCard": "**** **** **** asd"
+      }
+    }
+  ]
+}

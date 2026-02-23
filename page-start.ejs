@@ -1,0 +1,109 @@
+<!--
+  Cheng Tsz Hung (25017438D)
+  Awwab Hamam (22103907D)
+-->
+<%- include('partials/page-start', { pageTitle: 'All Transactions' }) %>
+
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+  <div>
+    <h1 class="h4 mb-1">All Event Transactions</h1>
+    <p class="text-muted mb-0">Track revenue and booking details across every event.</p>
+  </div>
+  <div class="d-flex gap-2">
+    <a href="/admin/transactions/export" class="btn btn-success">Export CSV</a>
+    <a href="/admin/events" class="btn btn-outline-primary">Manage Events</a>
+  </div>
+</div>
+
+<% if (!transactions.length) { %>
+<div class="alert alert-warning">No transactions have been recorded yet.</div>
+<% } else { %>
+<div class="row g-4 mb-4">
+  <% const totalRevenue = transactions.reduce((sum, txn) => sum + (txn.amount || 0), 0);
+     const totalBookings = transactions.length;
+     const distinctVendors = new Set(transactions.map((txn) => txn.userId)).size;
+  %>
+  <div class="col-md-4">
+    <div class="card shadow-sm border-success-subtle">
+      <div class="card-body text-center">
+        <div class="metric-value text-success">HK$<%= totalRevenue.toLocaleString() %></div>
+        <div class="metric-label">Total Revenue</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card shadow-sm border-primary-subtle">
+      <div class="card-body text-center">
+        <div class="metric-value text-primary"><%= totalBookings %></div>
+        <div class="metric-label">Successful Payments</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card shadow-sm border-info-subtle">
+      <div class="card-body text-center">
+        <div class="metric-value text-info"><%= distinctVendors %></div>
+        <div class="metric-label">Active Vendors</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="table-responsive shadow-sm bg-white rounded-4">
+  <table class="table table-striped align-middle mb-0">
+    <thead class="table-light">
+      <tr>
+        <th scope="col">Booking ID</th>
+        <th scope="col">Vendor</th>
+        <th scope="col">Event</th>
+        <th scope="col">Booths</th>
+        <th scope="col">Amount</th>
+        <th scope="col">Paid On</th>
+        <th scope="col">Method</th>
+        <th scope="col"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% transactions.forEach((transaction) => { %>
+      <tr>
+        <td><code><%= transaction.bookingId %></code></td>
+        <td>
+          <% if (transaction.user) { %>
+          <strong><%= transaction.user.nickname %></strong>
+          <div class="small text-muted"><%= transaction.user.userId %></div>
+          <% } else { %>
+          <span class="text-muted">User deleted</span>
+          <% } %>
+        </td>
+        <td>
+          <% if (transaction.event) { %>
+          <strong><%= transaction.event.title %></strong>
+          <div class="small text-muted"><%= transaction.event.date %> • <%= transaction.event.venue %></div>
+          <% } else { %>
+          <span class="text-muted">Event removed</span>
+          <% } %>
+        </td>
+        <td>
+          <% const boothLabels = (transaction.booking?.items || []).map((item) => item.label) || transaction.booking?.booths; %>
+          <div class="d-flex flex-wrap gap-1">
+            <% (boothLabels || []).forEach((label) => { %>
+            <span class="badge bg-light text-dark"><%= label %></span>
+            <% }) %>
+          </div>
+        </td>
+        <td>HK$<%= (transaction.amount || 0).toLocaleString() %></td>
+        <td><%= new Date(transaction.createdAt).toLocaleString() %></td>
+        <td class="small text-muted"><%= transaction.details?.maskedCard || '—' %></td>
+        <td>
+          <a href="/ticket/<%= transaction.bookingId %>" class="btn btn-outline-secondary btn-sm me-2">View Ticket</a>
+          <a href="/ticket/<%= transaction.bookingId %>/qr" class="btn btn-outline-primary btn-sm">View QR</a>
+        </td>
+      </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>
+<% } %>
+
+<%- include('partials/page-end') %>
+
